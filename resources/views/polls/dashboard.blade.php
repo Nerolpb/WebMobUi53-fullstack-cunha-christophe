@@ -4,15 +4,16 @@
     </x-slot>
 
     <x-slot:title>
-        Sondages
+        Mes sondages
     </x-slot>
 
     <div
         id="app"
         data-props='@json([
-            "polls" => $polls,
+            "polls"    => $polls,
             "loginUrl" => route("login"),
-            "username" => "test name"
+            "userId"   => $userId,
+            "username" => $username,
         ])'
     ></div>
 </x-vue-app-layout>
