@@ -124,6 +124,15 @@ async function handleDelete(poll) {
             Démarrer
           </button>
 
+          <a
+            v-if="!poll.is_draft"
+            :href="voteUrl(poll)"
+            target="_blank"
+            class="text-xs bg-teal-600 text-white px-3 py-1.5 rounded-lg hover:bg-teal-700 transition"
+          >
+            Voir le sondage
+          </a>
+
           <button
             @click="emit('edit', poll)"
             class="text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition"
