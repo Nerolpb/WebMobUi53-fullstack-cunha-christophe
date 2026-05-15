@@ -16,11 +16,21 @@ Route::apiResource('v1/posts', ApiPostController::class)
     ->middlewareFor(['update'], ['auth:sanctum', 'abilities:posts:update'])
     ->middlewareFor(['destroy'], ['auth:sanctum', 'abilities:posts:delete']);
 
+// Public: get poll by token (auth optional, affects is_owner / user_votes)
 Route::get('/v1/polls/{token}', [ApiPollController::class, 'show']);
 
+// Vote requires authentication
+Route::post('/v1/polls/{token}/vote', [ApiPollController::class, 'vote'])
+    ->middleware('auth:sanctum');
+
+// All other poll endpoints require authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/v1/foo', [ApiFooController::class, 'show']);
     Route::post('/v1/foo', [ApiFooController::class, 'store']);
+
     Route::get('/v1/polls', [ApiPollController::class, 'index']);
+    Route::post('/v1/polls', [ApiPollController::class, 'store']);
+    Route::put('/v1/polls/{id}', [ApiPollController::class, 'update']);
+    Route::post('/v1/polls/{id}/start', [ApiPollController::class, 'start']);
     Route::delete('/v1/polls/{id}', [ApiPollController::class, 'remove']);
 });
