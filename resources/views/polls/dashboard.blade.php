@@ -7,13 +7,5 @@
         Mes sondages
     </x-slot>
 
-    <div
-        id="app"
-        data-props='@json([
-            "polls"    => $polls,
-            "loginUrl" => route("login"),
-            "userId"   => $userId,
-            "username" => $username,
-        ])'
-    ></div>
+    <div id="app" data-props="{{ $propsJson }}"></div>
 </x-vue-app-layout>

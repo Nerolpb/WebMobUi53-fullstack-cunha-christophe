@@ -14,10 +14,13 @@ class PollDashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('polls.dashboard', [
+        $propsJson = json_encode([
             'polls'    => $polls,
+            'loginUrl' => route('login'),
             'userId'   => $request->user()->id,
             'username' => $request->user()->username,
-        ]);
+        ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+
+        return view('polls.dashboard', ['propsJson' => $propsJson]);
     }
 }

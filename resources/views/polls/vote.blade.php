@@ -7,12 +7,5 @@
         Sondage
     </x-slot>
 
-    <div
-        id="poll-vote-app"
-        data-props='@json([
-            "token"           => $token,
-            "isAuthenticated" => $isAuthenticated,
-            "loginUrl"        => route("login"),
-        ])'
-    ></div>
+    <div id="poll-vote-app" data-props="{{ $propsJson }}"></div>
 </x-default-layout>
