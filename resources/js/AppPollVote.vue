@@ -16,9 +16,8 @@ const poll       = ref(null);
 const loading    = ref(true);
 const fetchError = ref(null);
 
-// Sélections de vote
-const selectedOption  = ref(null);   // choix unique (radio)
-const selectedOptions = ref([]);     // choix multiple (checkboxes)
+const selectedOption  = ref(null);
+const selectedOptions = ref([]);
 
 const submitting   = ref(false);
 const voteError    = ref(null);
@@ -37,7 +36,6 @@ async function loadPoll() {
   }
 }
 
-// Pré-sélection des votes existants (une seule fois au chargement initial)
 watch(poll, (newPoll) => {
   if (newPoll && !initialized.value) {
     initialized.value = true;
@@ -74,7 +72,7 @@ const statusLabel = computed(() => {
 
 const statusCls = computed(() => {
   if (!poll.value) return '';
-  if (poll.value.is_draft)   return 'bg-slate-100 text-slate-600';
+  if (poll.value.is_draft)   return 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400';
   if (poll.value.is_expired) return 'bg-rose-100 text-rose-700';
   return 'bg-teal-100 text-teal-700';
 });
@@ -130,12 +128,12 @@ usePolling(loadPoll, 5000);
   <div class="py-4">
 
     <!-- Chargement -->
-    <div v-if="loading" class="text-center py-12 text-slate-400">Chargement…</div>
+    <div v-if="loading" class="text-center py-12 text-gray-400 dark:text-gray-500">Chargement…</div>
 
     <!-- Erreur de chargement -->
     <div
       v-else-if="fetchError"
-      class="bg-rose-50 border border-rose-200 rounded-xl p-6 text-rose-700 text-center"
+      class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-red-700 dark:text-red-400 text-center"
     >
       Sondage introuvable ou une erreur est survenue.
     </div>
@@ -146,11 +144,11 @@ usePolling(loadPoll, 5000);
       <!-- En-tête : titre + badge statut -->
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold text-slate-900">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             {{ poll.title || poll.question }}
           </h1>
-          <p v-if="poll.title" class="text-slate-600 mt-1">{{ poll.question }}</p>
-          <p v-if="poll.ends_at" class="text-xs text-slate-400 mt-1">
+          <p v-if="poll.title" class="text-gray-600 dark:text-gray-400 mt-1">{{ poll.question }}</p>
+          <p v-if="poll.ends_at" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span v-if="poll.is_expired">Terminé le </span>
             <span v-else>Se termine le </span>
             {{ new Date(poll.ends_at).toLocaleString('fr-FR') }}
@@ -164,16 +162,16 @@ usePolling(loadPoll, 5000);
       <!-- Lien de partage (propriétaire) -->
       <div
         v-if="poll.is_owner"
-        class="bg-teal-50 border border-teal-200 rounded-xl p-4"
+        class="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg p-4"
       >
-        <p class="text-xs font-semibold text-teal-700 mb-2 uppercase tracking-wide">
+        <p class="text-xs font-semibold text-teal-700 dark:text-teal-400 mb-2 uppercase tracking-wide">
           Lien de partage
         </p>
         <div class="flex items-center gap-2">
-          <code class="text-xs text-teal-800 break-all flex-1">{{ shareUrl }}</code>
+          <code class="text-xs text-teal-800 dark:text-teal-300 break-all flex-1">{{ shareUrl }}</code>
           <button
             @click="copyShareLink"
-            class="text-xs bg-teal-600 text-white px-3 py-1.5 rounded-lg hover:bg-teal-700 transition shrink-0"
+            class="text-sm px-4 py-2 bg-teal-600 dark:bg-purple-900 text-white rounded-md hover:bg-teal-700 dark:hover:bg-purple-800 transition shrink-0"
           >
             {{ linkCopied ? '✓ Copié !' : 'Copier' }}
           </button>
@@ -183,7 +181,7 @@ usePolling(loadPoll, 5000);
       <!-- Bannière : brouillon -->
       <div
         v-if="poll.is_draft"
-        class="bg-slate-100 border border-slate-200 rounded-xl p-4 text-slate-600"
+        class="bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 text-gray-600 dark:text-gray-400"
       >
         Ce sondage n'est pas encore ouvert au vote.
       </div>
@@ -191,22 +189,22 @@ usePolling(loadPoll, 5000);
       <!-- Bannière : expiré -->
       <div
         v-else-if="poll.is_expired"
-        class="bg-rose-50 border border-rose-200 rounded-xl p-4"
+        class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
       >
-        <p class="font-semibold text-rose-700">Ce sondage est terminé.</p>
-        <p class="text-sm text-rose-600 mt-1">Il n'est plus possible de voter.</p>
+        <p class="font-semibold text-red-700 dark:text-red-400">Ce sondage est terminé.</p>
+        <p class="text-sm text-red-600 dark:text-red-500 mt-1">Il n'est plus possible de voter.</p>
       </div>
 
       <!-- Formulaire de vote -->
       <div v-else-if="canVote">
-        <h2 class="text-lg font-semibold text-slate-900 mb-3">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
           {{ hasVoted ? 'Modifier votre vote' : 'Votez' }}
-          <span v-if="poll.allow_multiple_choices" class="text-sm font-normal text-slate-500">
+          <span v-if="poll.allow_multiple_choices" class="text-sm font-normal text-gray-500 dark:text-gray-400">
             (plusieurs choix possibles)
           </span>
         </h2>
 
-        <div v-if="voteSuccess && !hasVoted" class="bg-teal-50 border border-teal-200 rounded-xl p-4 mb-4 text-teal-700">
+        <div v-if="voteSuccess && !hasVoted" class="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg p-4 mb-4 text-teal-700 dark:text-teal-300">
           Vote enregistré !
         </div>
 
@@ -214,10 +212,10 @@ usePolling(loadPoll, 5000);
           <label
             v-for="opt in poll.options"
             :key="opt.id"
-            class="flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition"
+            class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition"
             :class="isSelected(opt.id)
-              ? 'border-teal-400 bg-teal-50'
-              : 'border-slate-200 hover:bg-slate-50'"
+              ? 'border-teal-400 bg-teal-50 dark:bg-teal-900/20'
+              : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-slate-700'"
           >
             <input
               v-if="poll.allow_multiple_choices"
@@ -234,15 +232,15 @@ usePolling(loadPoll, 5000);
               v-model="selectedOption"
               class="accent-teal-600 w-4 h-4"
             />
-            <span class="text-slate-800">{{ opt.label }}</span>
+            <span class="text-gray-800 dark:text-white">{{ opt.label }}</span>
           </label>
 
-          <p v-if="voteError" class="text-rose-600 text-sm pt-1">{{ voteError }}</p>
+          <p v-if="voteError" class="text-red-600 dark:text-red-400 text-sm pt-1">{{ voteError }}</p>
 
           <button
             type="submit"
             :disabled="submitting"
-            class="w-full mt-2 bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 disabled:opacity-50 transition"
+            class="w-full mt-2 px-4 py-2 bg-teal-600 dark:bg-purple-900 text-white rounded-md font-semibold hover:bg-teal-700 dark:hover:bg-purple-800 disabled:opacity-50 transition"
           >
             {{ submitting ? 'Envoi en cours…' : (hasVoted ? 'Modifier le vote' : 'Voter') }}
           </button>
@@ -252,7 +250,7 @@ usePolling(loadPoll, 5000);
       <!-- Déjà voté, changement non autorisé -->
       <div
         v-else-if="hasVoted && !poll.is_draft && !poll.is_expired"
-        class="bg-teal-50 border border-teal-200 rounded-xl p-4 text-teal-700"
+        class="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg p-4 text-teal-700 dark:text-teal-300"
       >
         Vous avez déjà voté à ce sondage.
       </div>
@@ -260,9 +258,9 @@ usePolling(loadPoll, 5000);
       <!-- Non connecté, sondage actif -->
       <div
         v-else-if="!isAuthenticated && !poll.is_draft && !poll.is_expired"
-        class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-700"
+        class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-blue-700 dark:text-blue-300"
       >
-        <a :href="loginUrl" class="font-semibold underline hover:text-blue-900">
+        <a :href="loginUrl" class="font-semibold underline hover:opacity-80">
           Connectez-vous
         </a>
         pour participer à ce sondage.
@@ -270,9 +268,9 @@ usePolling(loadPoll, 5000);
 
       <!-- Résultats -->
       <div v-if="showResults">
-        <h2 class="text-lg font-semibold text-slate-900 mb-3">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
           Résultats
-          <span class="text-xs font-normal text-slate-400 ml-1">(mis à jour automatiquement)</span>
+          <span class="text-xs font-normal text-gray-400 dark:text-gray-500 ml-1">(mis à jour automatiquement)</span>
         </h2>
         <PollChart
           :options="poll.options"
@@ -282,7 +280,7 @@ usePolling(loadPoll, 5000);
       </div>
 
       <!-- Résultats privés -->
-      <div v-else-if="!showResults && !poll.is_draft" class="text-sm text-slate-400 italic">
+      <div v-else-if="!showResults && !poll.is_draft" class="text-sm text-gray-500 dark:text-gray-400 italic">
         Les résultats ne sont pas publics.
       </div>
 

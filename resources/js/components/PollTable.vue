@@ -9,7 +9,7 @@ const linkCopied = ref(null);
 const deleting = ref(null);
 
 function pollStatus(poll) {
-  if (poll.is_draft) return { label: 'Brouillon', cls: 'bg-slate-100 text-slate-600' };
+  if (poll.is_draft) return { label: 'Brouillon', cls: 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400' };
   if (poll.ends_at && new Date(poll.ends_at) < new Date())
     return { label: 'Terminé', cls: 'bg-rose-100 text-rose-700' };
   return { label: 'En cours', cls: 'bg-teal-100 text-teal-700' };
@@ -64,23 +64,23 @@ async function handleDelete(poll) {
 
 <template>
   <div>
-    <p v-if="polls.length === 0" class="text-center text-slate-500 py-12">
+    <p v-if="polls.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-12">
       Aucun sondage. Créez-en un via le bouton « + Nouveau » !
     </p>
 
-    <div class="space-y-4">
+    <div class="space-y-6">
       <div
         v-for="poll in polls"
         :key="poll.id"
-        class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm"
+        class="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6"
       >
         <!-- Titre + badge -->
         <div class="flex items-start justify-between gap-3 mb-2">
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-slate-900 truncate">
+            <h3 class="font-bold text-gray-900 dark:text-white truncate">
               {{ poll.title || poll.question }}
             </h3>
-            <p v-if="poll.title" class="text-sm text-slate-500 truncate">{{ poll.question }}</p>
+            <p v-if="poll.title" class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ poll.question }}</p>
           </div>
           <span
             class="text-xs font-medium px-2 py-0.5 rounded-full shrink-0"
@@ -91,7 +91,7 @@ async function handleDelete(poll) {
         </div>
 
         <!-- Méta -->
-        <div class="text-xs text-slate-400 space-y-0.5 mb-3">
+        <div class="text-xs text-gray-500 dark:text-gray-400 space-y-0.5 mb-4">
           <p v-if="poll.started_at">Démarré : {{ fmt(poll.started_at) }}</p>
           <p v-if="poll.ends_at">Fin : {{ fmt(poll.ends_at) }}</p>
           <p v-else-if="poll.duration">Durée : {{ fmtDuration(poll.duration) }}</p>
@@ -103,23 +103,23 @@ async function handleDelete(poll) {
         <!-- Lien de partage (hors brouillon) -->
         <div
           v-if="!poll.is_draft"
-          class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 mb-3 text-xs"
+          class="flex items-center gap-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 mb-4 text-xs"
         >
-          <span class="text-slate-500 truncate flex-1">{{ voteUrl(poll) }}</span>
+          <span class="text-gray-500 dark:text-gray-400 truncate flex-1">{{ voteUrl(poll) }}</span>
           <button
             @click="copyLink(poll)"
-            class="text-teal-600 font-medium hover:text-teal-800 shrink-0"
+            class="text-teal-600 dark:text-teal-400 font-medium hover:text-teal-800 dark:hover:text-teal-300 shrink-0"
           >
             {{ linkCopied === poll.id ? '✓ Copié' : 'Copier' }}
           </button>
         </div>
 
         <!-- Actions -->
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button
             v-if="poll.is_draft"
             @click="handleStart(poll)"
-            class="text-xs bg-teal-600 text-white px-3 py-1.5 rounded-lg hover:bg-teal-700 transition"
+            class="text-sm px-4 py-2 bg-teal-600 dark:bg-purple-900 text-white rounded-md hover:bg-teal-700 dark:hover:bg-purple-800 transition"
           >
             Démarrer
           </button>
@@ -128,14 +128,14 @@ async function handleDelete(poll) {
             v-if="!poll.is_draft"
             :href="voteUrl(poll)"
             target="_blank"
-            class="text-xs bg-teal-600 text-white px-3 py-1.5 rounded-lg hover:bg-teal-700 transition"
+            class="text-sm px-4 py-2 bg-teal-600 dark:bg-purple-900 text-white rounded-md hover:bg-teal-700 dark:hover:bg-purple-800 transition"
           >
             Voir le sondage
           </a>
 
           <button
             @click="emit('edit', poll)"
-            class="text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition"
+            class="text-sm px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-slate-600 transition"
           >
             Modifier
           </button>
@@ -143,7 +143,7 @@ async function handleDelete(poll) {
           <button
             @click="handleDelete(poll)"
             :disabled="deleting === poll.id"
-            class="text-xs bg-rose-50 text-rose-600 border border-rose-200 px-3 py-1.5 rounded-lg hover:bg-rose-100 transition disabled:opacity-50"
+            class="text-sm px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-md hover:bg-red-100 transition disabled:opacity-50"
           >
             {{ deleting === poll.id ? '...' : 'Supprimer' }}
           </button>

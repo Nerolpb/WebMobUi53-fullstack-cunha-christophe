@@ -34,21 +34,21 @@ function backToList() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-900">
 
     <!-- En-tête -->
-    <header class="bg-teal-600 text-white px-4 py-4 shadow">
+    <header class="bg-teal-600 dark:bg-slate-800 text-white px-4 py-4 shadow">
       <div class="max-w-2xl mx-auto flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <a href="/" class="text-white hover:opacity-80 text-sm">← Accueil</a>
+          <a href="/" class="text-white hover:opacity-80 text-sm transition">← Accueil</a>
           <span class="opacity-40">|</span>
           <h1 class="font-bold">Mes sondages</h1>
-          <span v-if="username" class="text-teal-200 text-sm">({{ username }})</span>
+          <span v-if="username" class="text-teal-200 dark:text-slate-400 text-sm">({{ username }})</span>
         </div>
         <button
           v-if="view === 'list'"
           @click="showCreate"
-          class="bg-white text-teal-700 px-4 py-1.5 rounded-lg font-semibold text-sm hover:bg-teal-50 transition"
+          class="bg-white text-teal-700 px-4 py-1.5 rounded-md font-semibold text-sm hover:bg-teal-50 transition"
         >
           + Nouveau
         </button>
@@ -56,7 +56,7 @@ function backToList() {
     </header>
 
     <!-- Contenu principal -->
-    <main class="max-w-2xl mx-auto px-4 py-6">
+    <main class="max-w-2xl mx-auto px-4 py-8">
       <PollTable
         v-if="view === 'list'"
         @edit="showEdit"
